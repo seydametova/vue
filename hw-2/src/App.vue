@@ -2,10 +2,7 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
     <calc/>
-    {{ myCollection }}
-    <div v-for="(item, index) in myCollection" :key="index">
-      {{ index }} - {{ item }}
-    </div>
+    <buttonCheckbox/>
   </div>
 </template>
 

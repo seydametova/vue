@@ -3,30 +3,42 @@
     <div class="main">
         <input v-model="op1" type="number"/>
         <input v-model="op2" type="number"/>
-        <br/>
         = {{ result }}
-        <br/>
-        = {{ fibResult }}
     </div>
     <div class="error" v-if="error">
       Ошибка: {{ error }}
     </div>
-    <div class="message">
-      <template v-if="result < 0">Получилось отрицательное число</template>
-      <template v-else-if="result < 100">Результат в первой сотне</template>
-      <template v-else>Просто условие</template>
-    </div>
-    <div class="keyboard">
+   <div class="keyboard">
       <button v-for="operand in operands"
               :key="operand"
               :title="operand"
-              @click="calculate(operand)">
+              @click="calculate(operand)"
+              class="operators">
         {{ operand }}
       </button>
     </div>
-    <div class="logs">
-      <div v-for="(log, id) in logs" :key="id">
-        {{ log }}
+    <div class="buttonCheckbox">
+      <input type="checkbox" id="checkbox" v-model="show" v-on:click="show=!show">
+      Отобразить экранную клавиатуру
+    </div>
+    <div class="showElements"  v-show="show">
+      <div class="buttonNumber">
+        <button v-for="operand1 in operands1"
+                :key="operand1"
+                :title="operand1"
+                @click="addChar(operand1)"
+                class="numbers">
+          {{ operand1 }}
+        </button>
+        <button @click="removeChar()">
+          &#8592;
+        </button>
+      </div>
+      <div class="operands">
+        <input type="radio" id="op1" value="op1" v-model="selectedOperand">
+        <label for="op1">Operand 1</label>
+        <input type="radio" id="op2" value="op2" v-model="selectedOperand">
+        <label for="op2">Operand 2</label>
       </div>
     </div>
   </div>
@@ -41,15 +53,15 @@ export default {
       op2: 0,
       error: '',
       operands: ['+', '-', '/', '*', '^', 'Целочисленное деление'],
+      operands1: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+      checked: 'Отобразить экранную клавиатуру',
       result: 0,
-      fibResult: 0,
-      logs: {}
+      logs: {},
+      selectedOperand: 'op1',
+      show: false
     }
   },
   methods: {
-    fib (n) {
-      return n <= 1 ? n : this.fib(n - 1) + this.fib(n - 2)
-    },
     calculate (operation = '+') {
       this.error = ''
       switch (operation) {
@@ -72,28 +84,22 @@ export default {
           this.integerDivision()
           break
       }
-      const key = Date.now()
-      const value = `${this.op1}${operation}${this.op2} = ${this.result}`
-
-      this.$set(this.logs, key, value)
     },
     sum () {
       const { op1, op2 } = this
       this.result = Number(op1) + Number(op2)
-      this.fibResult = this.fib1 + this.fib2
     },
     sub () {
       const { op1, op2 } = this
       this.result = op1 - op2
-      this.fibResult = this.fib1 - this.fib2
     },
     div () {
       const { op1, op2 } = this
-      if (op2 === 0) {
+      if (Number(op2) === 0) {
         this.error = 'Нельзя делить на 0'
         return
       }
-      this.result = op1 / op2
+      this.result = (op1 / op2).toFixed(2)
     },
     multi () {
       const { op1, op2 } = this
@@ -105,23 +111,65 @@ export default {
     },
     integerDivision () {
       const { op1, op2 } = this
-      if (op2 === 0) {
+      if (Number(op2) === 0) {
         this.error = 'Нельзя делить на 0'
         return
       }
       this.result = Math.floor(op1 / op2)
-    }
-  },
-  computed: {
-    fib1 () {
-      return this.fib(this.op1)
     },
-    fib2 () {
-      return this.fib(this.op2)
+    addChar (char) {
+      switch (this.selectedOperand) {
+        case 'op1':
+          this.op1 += char
+          break
+        case 'op2':
+          this.op2 += char
+      }
     },
-    arrayFilter () {
-      return this.myCollection.filter(i => i)
+    removeChar () {
+      switch (this.selectedOperand) {
+        case 'op1': {
+          const str1 = this.op1 + ''
+          this.op1 = str1.substring(0, str1.length - 1)
+          break
+        }
+        case 'op2': {
+          const str2 = this.op2 + ''
+          this.op2 = str2.substring(0, str2.length - 1)
+          break
+        }
+      }
     }
   }
 }
 </script>
+
+<style scoped lang="scss">
+.keyboard {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 0;
+
+  .operators {
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+}
+.buttonCheckbox {
+  margin: 60px 0 10px 0;
+}
+.buttonNumber {
+  display: flex;
+  justify-content: center;
+
+  .numbers {
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+}
+.operands {
+  margin: 10px 0 0;
+}
+</style>
