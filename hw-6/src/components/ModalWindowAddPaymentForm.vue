@@ -1,0 +1,79 @@
+<template>
+    <div class="wrapper">
+        <div class="header">{{ settings.title }}</div>
+        <div class="content">
+            <add-payment-form v-if="settings.content == 'addPaymentForm'" :category-list="getCategoryList" @addPayment="addPayment"/>
+            <auth v-if="settings.content == 'auth'" />
+            <div class="footer">
+                <button @click="onCloseClick">Close</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import AddPaymentForm from './AddPaymentForm.vue'
+import Auth from './Auth.vue'
+import { mapGetters } from 'vuex'
+
+export default ({
+  name: 'ModalWindowAddPaymentForm',
+  components: { Auth, AddPaymentForm },
+  props: {
+    categoryList: {
+      type: Array,
+      default: () => []
+    },
+    data: {
+      default: () => ({
+        date: '',
+        category: '',
+        value: ''
+      })
+    },
+    settings: Object
+  },
+  computed: {
+    ...mapGetters([
+      'getCategoryList'
+    ])
+  },
+  methods: {
+    onCloseClick () {
+      this.$emit('close')
+    },
+    addPayment (data) {
+      this.$store.dispatch('addPayment', { payment: data })
+    },
+    getCurrentDate () {
+      const date = new Date()
+      const d = date.getDate()
+      const m = date.getMonth() + 1
+      const y = date.getFullYear()
+      return `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d}`
+    }
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(68, 61, 61, 0.5);
+
+    &.content {
+        position: relative;
+        z-index: 100;
+    }
+
+}
+
+</style>
