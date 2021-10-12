@@ -25,7 +25,8 @@ export default {
       default: () => ({
         date: '',
         category: '',
-        value: ''
+        value: '',
+        id: ''
       })
     }
   },
@@ -44,54 +45,58 @@ export default {
       const data = {
         date: this.data.date ? this.formatDate(new Date(this.data.date)) : this.getCurrentDate,
         category: this.data.category,
-        value: Number(this.data.value)
+        value: Number(this.data.value),
+        id: this.data.id
       }
-      this.$emit('addPayment', data)
+      if (data.id) {
+        this.$emit('editPayment', data)
+      } else {
+        this.$emit('addPayment', data)
+      }
     },
     formatDate (date) {
       const d = date.getDate()
       const m = date.getMonth() + 1
       const y = date.getFullYear()
-      return `${d}.${m}.${y}`
+      return `${d > 9 ? d : "0" + d}.${m > 9 ? m : "0" + m}.${y}`
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-    .form-container {
-        display: flex;
-        margin: 24px 0;
-        justify-content: center;
+.form-container {
+  display: flex;
+  margin: 24px 0;
+  justify-content: center;
 
-        .button {
-            $btn-background: rgb(29, 139, 139);
+  .button {
+    $btn-background: rgb(29, 139, 139);
 
-            border: none;
-            padding: 8px 16px;
-            color: white;
-            background: $btn-background;
-            border-radius: 4px;
-            cursor: pointer;
+    border: none;
+    padding: 8px 16px;
+    color: white;
+    background: $btn-background;
+    border-radius: 4px;
+    cursor: pointer;
 
-            &:hover {
-                background: lighten($btn-background, 10%);
-            }
-        }
-
-        .form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .input-placeholder {
-                width: 100%;
-                margin-bottom: 16px;
-                font-size: 20px;
-                line-height: 24px;
-                box-sizing: border-box;
-            }
-        }
-
+    &:hover {
+        background: lighten($btn-background, 10%);
     }
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .input-placeholder {
+      width: 100%;
+      margin-bottom: 16px;
+      font-size: 20px;
+      line-height: 24px;
+      box-sizing: border-box;
+    }
+  }
+}
 </style>

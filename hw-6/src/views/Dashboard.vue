@@ -1,14 +1,14 @@
 <template>
   <div>
     <main class="main">
-      <br/>
-      Total Price: {{ getFPV }}
-      <div>
-        <router-link class="buttonAddNewCoast" to="/add/payment">ADD NEW COST &#43;</router-link>
+      <!-- Total Price: {{ getFPV }} -->
+      <div class="container">
+        <h1 class="text-decor">My personal costs</h1>
+        <button @click="buttonAddPayment" class="button-add-new-coast">ADD NEW COST &#43;</button>
+        <payment-display :items="paymentsList"/>
+        <PaginationPayment @selectPage="selectPage" :page="currentPage"/>
       </div>
-      <payment-display :items="paymentsList"/>
-      <PaginationPayment @selectPage="selectPage" :page="currentPage"/>
-      <br/>
+      <!-- <button @click="buttonAddPayment" >add</button> -->
       <!-- <modal-window-add-payment-form @close="onModalClose" v-if="modalIsShow" :settings="modalSettings"/>
       <br/>
       <div>
@@ -66,7 +66,7 @@ export default {
       this.modalIsShow = true
       this.modalSettings = {
         title: 'Add Payment Form',
-        content: 'addPaymentForm'
+        content: 'AddPaymentForm'
       }
     },
     openAuth () {
@@ -78,6 +78,9 @@ export default {
     },
     onModalClose () {
       this.modalIsShow = false
+    },
+    buttonAddPayment () {
+      this.$modal.show({ title: 'Add Payment Form', content: 'addPaymentForm' })
     }
   },
   created () {
@@ -89,27 +92,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .buttonsNew {
-    display: flex;
-    justify-content: space-between;
+.container {
+  text-align: left;
+}
+.text-decor {
+  font-weight: 100;
+  font-size: 40px;
+  margin: 16px 0;
+}
+.button-add-new-coast {
+  display: block;
+  margin: 16px 0;
+  $btn-background: rgb(29, 139, 139);
+
+  border: none;
+  padding: 8px 16px;
+  color: white;
+  background: $btn-background;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+      background: lighten($btn-background, 10%);
   }
-
-  .buttonAddNewCoast {
-    display: block;
-    margin: 16px 0;
-    $btn-background: rgb(29, 139, 139);
-
-    border: none;
-    padding: 8px 16px;
-    color: white;
-    background: $btn-background;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-
-    &:hover {
-        background: lighten($btn-background, 10%);
-    }
-  }
+}
 
 </style>

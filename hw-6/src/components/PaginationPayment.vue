@@ -25,15 +25,20 @@ export default ({
 
 <style lang="scss" scoped>
     .pagination{
-        padding: 8px 88px;
-        width: 150px;
-        transition: background-color .3s;
-        border: 1px solid rgb(224, 224, 224);
+      padding: 10px 144px;
+      width: 150px;
+      transition: background-color .3s;
+      border: 1px solid rgb(224, 224, 224);
+      font-size: 14px;
+      text-align: center;
     }
     a {
-        text-decoration: none;
-        color: black;
-        padding: 8px 8px;
+      text-decoration: none;
+      color: black;
+      padding: 8px 8px;
+    }
+    a:hover:not(.active) {
+      color: rgb(29, 139, 139);
     }
 
 </style>

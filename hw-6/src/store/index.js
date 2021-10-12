@@ -3,61 +3,98 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const data = {
-  page1: [
-    {
-      id: 1,
-      date: '28.03.2020',
-      category: 'Food',
-      value: 500
-    },
-    {
-      id: 2,
-      date: '24.03.2020',
-      category: 'Sport',
-      value: 280
-    },
-    {
-      id: 3,
-      date: '24.03.2020',
-      category: 'Transport ',
-      value: 156
-    }
-  ],
-  page2: [
-    {
-      id: 4,
-      date: '28.03.2020',
-      category: 'Food',
-      value: 810
-    },
-    {
-      id: 5,
-      date: '24.03.2020',
-      category: 'Transport',
-      value: 98
-    },
-    {
-      id: 6,
-      date: '24.03.2020',
-      category: 'Food ',
-      value: 650
-    }
-  ]
-}
+const itemsPerPage = 10
+
+let data = [
+  {
+    id: 1,
+    date: '28.03.2020',
+    category: 'Food',
+    value: 500
+  },
+  {
+    id: 2,
+    date: '24.03.2020',
+    category: 'Sport',
+    value: 280
+  },
+  {
+    id: 3,
+    date: '24.03.2020',
+    category: 'Transport ',
+    value: 156
+  },
+  {
+    id: 4,
+    date: '28.03.2020',
+    category: 'Food',
+    value: 605
+  },
+  {
+    id: 5,
+    date: '24.03.2020',
+    category: 'Sport',
+    value: 539
+  },
+  {
+    id: 6,
+    date: '24.03.2020',
+    category: 'Education ',
+    value: 304
+  },
+  {
+    id: 7,
+    date: '28.03.2020',
+    category: 'Education',
+    value: 1069
+  },
+  {
+    id: 8,
+    date: '24.03.2020',
+    category: 'Sport',
+    value: 100
+  },
+  {
+    id: 9,
+    date: '24.03.2020',
+    category: 'Transport',
+    value: 40
+  },
+  {
+    id: 10,
+    date: '24.03.2020',
+    category: 'Education ',
+    value: 1500
+  },
+  {
+    id: 11,
+    date: '28.03.2020',
+    category: 'Food',
+    value: 810
+  },
+  {
+    id: 12,
+    date: '24.03.2020',
+    category: 'Transport',
+    value: 98
+  },
+  {
+    id: 13,
+    date: '24.03.2020',
+    category: 'Food ',
+    value: 650
+  }
+]
 
 export default new Vuex.Store({
   state: {
-    paymentsList: {},
+    paymentsList: [],
     categoryList: [],
     currentPage: 1
   },
   mutations: {
     setPaymentsListData (state, payload) {
-      state.paymentsList = {
-        ...state.paymentsList,
-        ...payload
-      }
+      state.paymentsList = payload
     },
     setCategoryList (state, payload) {
       state.categoryList = payload
@@ -65,22 +102,25 @@ export default new Vuex.Store({
     addDataToPaymentsList (state, payload) {
       state.paymentsList.push(payload)
     },
+    editPayment (state, payload) {
+      const index = state.paymentsList.findIndex(a => a.id === payload.id)
+      if (index >= 0) {
+        state.paymentsList = [
+          ...state.paymentsList.slice(0, index),
+          payload,
+          ...state.paymentsList.slice(index + 1)
+        ]
+      }
+    },
     setCurrentPage (state, payload) {
       state.currentPage = payload
     }
   },
   actions: {
     fetchData ({ commit, state }) {
-      const pageKey = `page${state.currentPage}`
-      if (state.paymentsList[pageKey]) {
-        return
-      }
-
       return new Promise(resolve => {
         setTimeout(() => {
-          const res = {}
-          res[pageKey] = data[`page${state.currentPage}`]
-          resolve(res)
+          resolve(data.slice((state.currentPage - 1) * itemsPerPage, state.currentPage * itemsPerPage))
         }, 1000)
       }).then(res => {
         commit('setPaymentsListData', res)
@@ -97,41 +137,50 @@ export default new Vuex.Store({
         commit('setCategoryList', res)
       })
     },
-    addPayment ({ commit }, { payment }) {
+    addPayment ({ commit, dispatch }, { payment }) {
       return new Promise(resolve => {
         setTimeout(() => {
-          const pages = Object.keys(data)
-            .map(key => Number(key.replace('page', '')))
-          let maxPage = Math.max(...pages)
-          const list = data[`page${maxPage}`] || []
-          const maxId = Math.max(...list.map(a => a.id), 0)
-          const newPayment = {
+          const id = Math.max(...data.map(a => a.id), 0) + 1
+          data.push({
             ...payment,
-            id: maxId + 1
-          }
-          if (list.length < 3) {
-            list.push(newPayment)
-            const res = {}
-            res[`page${maxPage}`] = data[`page${maxPage}`]
-            resolve(res)
-          } else {
-            maxPage++
-            const res = {}
-            data[`page${maxPage}`] = [newPayment]
-            res[`page${maxPage}`] = [newPayment]
-            resolve(res)
-          }
+            id
+          })
+          resolve()
         }, 250)
       }).then(res => {
-        commit('setPaymentsListData', res)
+        return dispatch('fetchData')
+      })
+    },
+    editPayment ({ commit }, { payment }) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const index = data.findIndex(a => a.id === payment.id)
+          if (index >= 0) {
+            data = [
+              ...data.slice(0, index),
+              payment,
+              ...data.slice(index + 1)
+            ]
+          }
+          resolve(payment)
+        })
+      }).then(res => commit('editPayment', res))
+    },
+    deletePayment ({ dispatch }, { id }) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          data = data.filter(a => a.id !== id)
+          resolve()
+        }, 250)
+      }).then(res => {
+        return dispatch('fetchData')
       })
     }
   },
   getters: {
-    getPaymentsList: state => state.paymentsList[`page${state.currentPage}`],
+    getPaymentsList: state => state.paymentsList,
     getPaymentsListFullPrice: state => {
-      const list = state.paymentsList[`page${state.currentPage}`] || []
-      return list.reduce((res, cur) => res + cur.value, 0)
+      return state.paymentsList.reduce((res, cur) => res + cur.value, 0)
     },
     getCategoryList: state => state.categoryList,
     getCurrentPage: state => state.currentPage

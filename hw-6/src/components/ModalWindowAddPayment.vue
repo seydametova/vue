@@ -1,9 +1,10 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper" v-if="modalIsShow">
         <div class="header">{{ settings.title }}</div>
         <div class="content">
-            <add-payment-form v-if="settings.content == 'addPaymentForm'" :category-list="getCategoryList" @addPayment="addPayment"/>
+            <add-payment-form v-if="settings.content == 'addPaymentForm'" :category-list="getCategoryList" :data="settings.data" @addPayment="addPayment" @editPayment="editPayment"/>
             <auth v-if="settings.content == 'auth'" />
+            <br/>
             <div class="footer">
                 <button @click="onCloseClick">Close</button>
             </div>
@@ -24,29 +25,24 @@ export default ({
       type: Array,
       default: () => []
     },
-    data: {
-      default: () => ({
-        date: '',
-        category: '',
-        value: ''
-      })
-    },
-    settings: Object
+    settings: Object,
+    modalIsShow: Boolean
   },
   computed: {
     ...mapGetters([
       'getCategoryList'
-    ]),
-    title () {
-      return this.settings?.title || 'Modal Window'
-    }
+    ])
   },
   methods: {
     onCloseClick () {
-      this.$emit('close')
+      this.$modal.hide()
+      this.data = undefined
     },
     addPayment (data) {
       this.$store.dispatch('addPayment', { payment: data })
+    },
+    editPayment (data) {
+      this.$store.dispatch('editPayment', { payment: data })
     },
     getCurrentDate () {
       const date = new Date()

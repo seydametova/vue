@@ -8,17 +8,17 @@ export default {
 
     this.installed = true
 
-    Vue.prototype.$modal = {
+    Vue.prototype.$paymentMenu = {
       EventBus: new Vue(),
 
       show (settings) {
-        this.EventBus.$emit('onShown', settings)
-        console.log('show', settings)
+        this.EventBus.$emit('onMenuShown', settings)
+        console.log('menuShow', settings)
       },
 
       hide () {
-        this.EventBus.$emit('onHide')
-        console.log('hide')
+        this.EventBus.$emit('onMenuHide')
+        console.log('menuHide')
       }
     }
   }

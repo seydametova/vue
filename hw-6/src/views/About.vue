@@ -1,20 +1,23 @@
 <template>
     <div>
+      <br/>
       About
-      <modal-window-add-payment/>
+      <!-- <modal-window-add-payment/> -->
       <button @click="openModalAuth">OpenAuth</button>
     </div>
 </template>
 
 <script>
-import ModalWindowAddPayment from '../components/ModalWindowAddPayment.vue'
+// import ModalWindowAddPayment from '../components/ModalWindowAddPayment.vue'
 
 export default {
   name: 'About',
-  components: { ModalWindowAddPayment },
+  components: {
+    // ModalWindowAddPayment
+  },
   methods: {
     openModalAuth () {
-      console.log('open modal')
+      this.$modal.show({ title: 'Auth', content: 'auth' })
     }
   }
 }
