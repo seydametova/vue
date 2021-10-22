@@ -13,50 +13,22 @@
     <v-col :cols="3">{{ item.category }}</v-col>
     <v-col :cols="2">{{ item.value }}</v-col>
     <v-col :cols="2" class="actions">
-      <!-- <v-btn> -->
-        <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-        >
-          mdi-pencil
-        </v-icon>
-      <!-- </v-btn> -->
-      <!-- <v-btn> -->
-        <v-icon
-        small
-        @click="deleteItem(item)"
-        >
-          mdi-delete
-        </v-icon>
-      <!-- </v-btn> -->
-
+      <v-icon
+      small
+      class="mr-2"
+      @click="editItem(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+      small
+      @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
     </v-col>
   </v-row>
 </v-container>
-
-    <!-- <table class="table">
-      <thead>
-        <tr class="row">
-          <th class="cell">#</th>
-          <th class="cell">Date</th>
-          <th class="cell">Category</th>
-          <th class="cell">Value</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in items" :key="item.id" class="row">
-          <td class="cell">{{ item.id }}</td>
-          <td class="cell">{{ item.date }}</td>
-          <td class="cell">{{ item.category }}</td>
-          <td class="cell">{{ item.value }}</td>
-          <td>
-            <button @click="openContextMenu($event, item)" class="button-menu">&#9776;</button>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
 </template>
 
 <script>

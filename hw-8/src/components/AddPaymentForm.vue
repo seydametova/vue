@@ -1,24 +1,10 @@
 <template>
 <v-card class="text-left pa-8">
-  <v-text-field type="date" v-model="data.date"/>
-  <v-select v-model="data.category" label="Category" :items="categoryList"></v-select>
-  <v-text-field type="number" v-model="data.value" label="Value"/>
-  <v-btn color="teal" dark @click="onSaveClick" class="button-add">ADD <v-icon>mdi-plus</v-icon></v-btn>
-
-  <!-- <div class="form-container">
-        <div class="form">
-            <input type="date" placeholder="Date" v-model="data.date" class="input-placeholder">
-            <select v-model="data.category" class="input-placeholder">
-              <option v-for="option in categoryList" :key="option">
-                {{ option }}
-              </option>
-            </select>
-            <input type="number" placeholder="Value" v-model="data.value" class="input-placeholder">
-            <button @click="onSaveClick" class="button">ADD &#43;</button>
-        </div>
-    </div> -->
+  <v-text-field type="date" v-model="data.date" id="add-payment-form-date"/>
+  <v-select v-model="data.category" label="Category" :items="categoryList" id="add-payment-form-category"></v-select>
+  <v-text-field type="number" v-model="data.value" label="Value" id="add-payment-form-value"/>
+  <v-btn color="teal" dark @click="onSaveClick" class="button-add" id="add-payment-form-button">ADD <v-icon>mdi-plus</v-icon></v-btn>
 </v-card>
-
 </template>
 
 <script>
