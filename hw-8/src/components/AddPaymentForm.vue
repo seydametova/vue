@@ -1,5 +1,11 @@
 <template>
-    <div class="form-container">
+<v-card class="text-left pa-8">
+  <v-text-field type="date" v-model="data.date"/>
+  <v-select v-model="data.category" label="Category" :items="categoryList"></v-select>
+  <v-text-field type="number" v-model="data.value" label="Value"/>
+  <v-btn color="teal" dark @click="onSaveClick" class="button-add">ADD <v-icon>mdi-plus</v-icon></v-btn>
+
+  <!-- <div class="form-container">
         <div class="form">
             <input type="date" placeholder="Date" v-model="data.date" class="input-placeholder">
             <select v-model="data.category" class="input-placeholder">
@@ -10,17 +16,15 @@
             <input type="number" placeholder="Value" v-model="data.value" class="input-placeholder">
             <button @click="onSaveClick" class="button">ADD &#43;</button>
         </div>
-    </div>
+    </div> -->
+</v-card>
+
 </template>
 
 <script>
 export default {
   name: 'AddPaymentForm',
   props: {
-    categoryList: {
-      type: Array,
-      default: () => []
-    },
     data: {
       default: () => ({
         date: '',
@@ -31,6 +35,9 @@ export default {
     }
   },
   computed: {
+    categoryList () {
+      return this.$store.getters.getCategoryList
+    },
     getCurrentDate () {
       const today = new Date()
       return this.formatDate(today)
@@ -70,7 +77,7 @@ export default {
   margin: 24px 0;
   justify-content: center;
 
-  .button {
+  .button-add {
     $btn-background: rgb(29, 139, 139);
 
     border: none;

@@ -21,7 +21,7 @@ let data = [
   {
     id: 3,
     date: '24.03.2020',
-    category: 'Transport ',
+    category: 'Transport',
     value: 156
   },
   {
@@ -39,7 +39,7 @@ let data = [
   {
     id: 6,
     date: '24.03.2020',
-    category: 'Education ',
+    category: 'Education',
     value: 304
   },
   {
@@ -63,7 +63,7 @@ let data = [
   {
     id: 10,
     date: '24.03.2020',
-    category: 'Education ',
+    category: 'Education',
     value: 1500
   },
   {
@@ -81,7 +81,7 @@ let data = [
   {
     id: 13,
     date: '24.03.2020',
-    category: 'Food ',
+    category: 'Food',
     value: 650
   }
 ]
@@ -90,7 +90,8 @@ export default new Vuex.Store({
   state: {
     paymentsList: [],
     categoryList: [],
-    currentPage: 1
+    currentPage: 1,
+    totalCount: 0
   },
   mutations: {
     setPaymentsListData (state, payload) {
@@ -98,6 +99,9 @@ export default new Vuex.Store({
     },
     setCategoryList (state, payload) {
       state.categoryList = payload
+    },
+    setTotalCount (state, payload) {
+      state.totalCount = payload
     },
     addDataToPaymentsList (state, payload) {
       state.paymentsList.push(payload)
@@ -123,6 +127,7 @@ export default new Vuex.Store({
           resolve(data.slice((state.currentPage - 1) * itemsPerPage, state.currentPage * itemsPerPage))
         }, 1000)
       }).then(res => {
+        commit('setTotalCount', data.length)
         commit('setPaymentsListData', res)
       })
     },
@@ -183,6 +188,7 @@ export default new Vuex.Store({
       return state.paymentsList.reduce((res, cur) => res + cur.value, 0)
     },
     getCategoryList: state => state.categoryList,
-    getCurrentPage: state => state.currentPage
+    getCurrentPage: state => state.currentPage,
+    getTotalPages: state => Math.ceil(state.totalCount / itemsPerPage)
   }
 })

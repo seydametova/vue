@@ -1,40 +1,64 @@
 <template>
-  <div>
-    <main class="main">
-      <!-- Total Price: {{ getFPV }} -->
-      <div class="container">
-        <h1 class="text-decor">My personal costs</h1>
-        <button @click="buttonAddPayment" class="button-add-new-coast">ADD NEW COST &#43;</button>
-        <payment-display :items="paymentsList"/>
-        <PaginationPayment @selectPage="selectPage" :page="currentPage"/>
-      </div>
-      <!-- <button @click="buttonAddPayment" >add</button> -->
-      <!-- <modal-window-add-payment-form @close="onModalClose" v-if="modalIsShow" :settings="modalSettings"/>
-      <br/>
+<v-container>
+  <v-row>
+    <v-col>
+      <v-row>
+        <v-col>
+          <div class="text-h5 text-sm-h3 mb-8">My personal costs</div>
+        </v-col>
+      </v-row>
+      <v-dialog v-model="dialog" width="500">
+        <template v-slot:activator="{ on }">
+          <v-btn color="teal" dark v-on="on" @click="buttonAddPayment()">
+            ADD NEW COST <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </template>
+        <v-card>
+          <add-payment-form :data="paymentData" @addPayment="addPayment" @editPayment="editPayment"/>
+        </v-card>
+      </v-dialog>
+
+      <payment-display :items="paymentsList" @editItem="openPayment($event)" @deleteItem="removePayment($event)"/>
+
       <div>
-        <button @click="openPayment">add Payment</button>
-        <button @click="openAuth">Auth</button>
-      </div> -->
-    </main>
-  </div>
+        <main class="main">
+          <div class="content-container">
+            <PaginationPayment @selectPage="selectPage" :page="currentPage"/>
+          </div>
+        </main>
+      </div>
+
+    </v-col>
+    <v-col>
+      диаграмма
+    </v-col>
+  </v-row>
+</v-container>
 </template>
 
 <script>
 import PaymentDisplay from '../components/PaymentDisplay.vue'
 import PaginationPayment from '../components/PaginationPayment.vue'
 import { mapMutations, mapGetters } from 'vuex'
-// import ModalWindowAddPaymentForm from '../components/ModalWindowAddPaymentForm.vue'
+import AddPaymentForm from '../components/AddPaymentForm.vue'
 
 export default {
   name: 'Dashboard',
   components: {
     PaginationPayment,
-    PaymentDisplay
-    // ModalWindowAddPaymentForm
+    PaymentDisplay,
+    AddPaymentForm
   },
   data: () => ({
-    // modalIsShow: false,
-    // modalSettings: {}
+    dialog: false,
+    paymentData: {
+      default: () => ({
+        date: '',
+        category: '',
+        value: '',
+        id: ''
+      })
+    }
   }),
   computed: {
     ...mapGetters([
@@ -57,17 +81,22 @@ export default {
     }),
     addPayment (data) {
       this.$store.dispatch('addPayment', { payment: data })
+      this.dialog = false
+    },
+    editPayment (data) {
+      this.$store.dispatch('editPayment', { payment: data })
+      this.dialog = false
+    },
+    removePayment (item) {
+      this.$store.dispatch('deletePayment', { id: item.id })
     },
     selectPage (page) {
       this.$store.commit('setCurrentPage', page)
       this.$store.dispatch('fetchData')
     },
-    openPayment () {
-      this.modalIsShow = true
-      this.modalSettings = {
-        title: 'Add Payment Form',
-        content: 'AddPaymentForm'
-      }
+    openPayment (item) {
+      this.paymentData = item
+      this.dialog = true
     },
     openAuth () {
       this.modalIsShow = true
@@ -80,7 +109,13 @@ export default {
       this.modalIsShow = false
     },
     buttonAddPayment () {
-      this.$modal.show({ title: 'Add Payment Form', content: 'addPaymentForm' })
+      this.dialog = true
+      this.paymentData = {
+        date: '',
+        category: '',
+        value: '',
+        id: ''
+      }
     }
   },
   created () {
@@ -92,11 +127,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.content-container {
   text-align: left;
 }
 .text-decor {
-  font-weight: 100;
+  font-weight: 300;
   font-size: 40px;
   margin: 16px 0;
 }

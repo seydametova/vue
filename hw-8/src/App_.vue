@@ -3,8 +3,6 @@
     <header>
       <router-link to="/dashboard">dashboard</router-link>
       <router-link to="/about">about</router-link>
-      <!-- <router-link to="/404">notfound</router-link> -->
-      <!-- <div @click="goToPage('NotFound')">404</div> -->
     </header>
     <main>
       <router-view/>
@@ -20,9 +18,7 @@
 </template>
 
 <script>
-// import ModalWindowAddPayment from './components/ModalWindowAddPayment.vue'
 import { mapMutations, mapGetters } from 'vuex'
-// import ModalContextMenuVue from './components/ModalContextMenu.vue'
 
 export default {
   name: 'App',
@@ -75,20 +71,6 @@ export default {
         name: pageName
       })
     },
-    // openPayment () {
-    //   this.modalIsShow = true
-    //   this.modalSettings = {
-    //     title: 'Add Payment Form',
-    //     content: 'addPaymentForm'
-    //   }
-    // },
-    // openAuth () {
-    //   this.modalIsShow = true
-    //   this.modalSettings = {
-    //     title: 'Auth Form',
-    //     content: 'auth'
-    //   }
-    // },
     onShown (settings) {
       this.modalSettings.modalSettings = settings
       this.modalSettings.modalIsShow = true
